@@ -1,8 +1,9 @@
 #include "LEM1802.h"
 #include "Debug.h"
-
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/VertexBuffer.hpp>
+#include <SFML/Window/Event.hpp>
+
 
 const uint16_t default_font[] = { //Ripped from https://gist.github.com/SylvainBoilard/4645708 THANKS!
 	0xb79e, 0x388e, 0x722c, 0x75f4, 0x19bb, 0x7f8f, 0x85f9, 0xb158,
@@ -222,6 +223,11 @@ void LEM1802::update()
 		return;
 	}
 
+	sf::Event waste;
+	window.pollEvent(waste);
+
+	window.clear();
+
 	for (char x = 0; x < 32; x++)
 	{
 		for (char y = 0; y < 12; y++)
@@ -236,4 +242,6 @@ void LEM1802::update()
 			draw(x, y, glyph, fg, bg, blink);
 		}
 	}
+
+	window.display();
 }
