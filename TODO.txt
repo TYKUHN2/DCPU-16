@@ -1,7 +1,7 @@
 Patch I/J EX bug (Effects are written first causing potential conflict when write operand is an effect)
-Implement basic peripherals
 Implement scheduler
 Randomized memory corruption on interrupt queue overflow
-Primary (non-peripheral) interface
+Implement other non-LEM1802 displays
+Implement other non-display hardware
 Optimize chain skipping
 Evaluate observable delay vs execution delay for debt handling
