@@ -175,7 +175,7 @@ void LEM1802::draw(int x, int y, uint32_t glyph, uint16_t fg, uint16_t bg, bool 
 
 		for (char j = 0; j < 8; j++)
 		{
-			sf::Vector2f coords{ i, j };
+			sf::Vector2f coords{ (float)i, (float)j };
 
 			sf::Vertex pixel{ coords }; //Construct pixel at coordinates
 
@@ -198,13 +198,13 @@ void LEM1802::draw(int x, int y, uint32_t glyph, uint16_t fg, uint16_t bg, bool 
 
 	//Construct physical cell for drawing
 	sf::Vertex corners[4];
-	for (int i = 0; i < 4; i++)
+	for (char i = 0; i < 4; i++)
 	{
 		int realX = (x + (i % 2)) * 4;
 		int realY = y + (i / 2) * 8;
-		sf::Vector2f coords{ realX, realY };
+		sf::Vector2f coords{ (float)realX, (float)realY };
 
-		sf::Vector2f texCoords{ (i % 2) * 4, ((int)(i / 2)) * 8 };
+		sf::Vector2f texCoords{ (float)(i % 2) * 4, (float)((int)(i / 2)) * 8 };
 
 		sf::Vertex corner{ coords, texCoords };
 		corners[i] = corner;

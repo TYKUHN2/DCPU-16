@@ -4,4 +4,5 @@
 namespace Debug
 {
 	void print(sf::String);
+	void print(unsigned int);
 }

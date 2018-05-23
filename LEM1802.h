@@ -11,8 +11,6 @@ class LEM1802 :
 
 	uint8_t border = 0;
 
-	void update() override;
-
 	void process() override;
 
 	void draw(int, int, uint32_t, uint16_t, uint16_t, bool);

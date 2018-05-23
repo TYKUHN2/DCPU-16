@@ -1,7 +1,6 @@
 #pragma once
 #include "Interruptable.h"
-	#include "Processor.h"
-
+#include "Processor.h"
 #include <cstdint>
 
 class Hardware : public Interruptable
@@ -10,7 +9,7 @@ class Hardware : public Interruptable
 
 	virtual void process() = 0;
 
-	bool interruptHook(int) override { process(); hasReceived = true; return false; };
+	bool interruptHook(int) override;
 
 public:
 	Processor * parent;

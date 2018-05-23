@@ -4,3 +4,10 @@ Hardware::Hardware(Processor * target, uint32_t manufacturer, uint32_t type, uin
 {
 	target->connect(this);
 }
+
+bool Hardware::interruptHook(int useless)
+{
+	process();
+	hasReceived = true;
+	return false;
+}

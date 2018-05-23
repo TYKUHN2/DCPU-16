@@ -2,7 +2,8 @@
 
 #include "Registers.h"
 #include "Interruptable.h"
-#include "Hardware.h"
+
+class Hardware;
 
 enum class PowerMode
 {
