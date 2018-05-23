@@ -1,9 +1,9 @@
 #include "Debug.h"
 #include <cstdio>
 
-void Debug::print(sf::String txt)
+void Debug::print(std::string txt)
 {
-	printf("%s\n", ((std::string)txt).c_str());
+	printf("%s\n", txt.c_str());
 }
 
 void Debug::print(unsigned int val)

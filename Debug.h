@@ -1,8 +1,8 @@
 #pragma once
-#include <SFML/System/String.hpp>
+#include <string>
 
 namespace Debug
 {
-	void print(sf::String);
+	void print(std::string);
 	void print(unsigned int);
 }
