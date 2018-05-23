@@ -49,6 +49,7 @@ public:
 
 	bool inDebt();
 	void release();
+	void charge(int);
 
 	void connect(Hardware *);
 

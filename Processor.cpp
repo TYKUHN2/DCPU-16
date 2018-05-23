@@ -562,17 +562,16 @@ void Processor::singleParam(char param, char opcode) //Process single-operand in
 
 	case HWQ:
 		debt += 4;
-		long deviceID;
-		int version;
-		long manufacturer;
 
-		registers.a = deviceID & 0xFFFF;
-		registers.b = deviceID >> 16;
+		Hardware * device = devices[registers.a];
 
-		registers.c = version;
+		registers.a = device->type & 0xFFFF;
+		registers.b = device->type >> 16;
 
-		registers.x = manufacturer & 0xFFFF;
-		registers.y = manufacturer >> 16;
+		registers.c = device->version;
+
+		registers.x = device->manufacturer & 0xFFFF;
+		registers.y = device->manufacturer >> 16;
 		break;
 
 	case HWI:
@@ -640,9 +639,6 @@ void Processor::process() //Process next instruction and return cycles to wait
 		}
 		catch (Error e)
 		{
-			if (e == Error::SILENT) {
-				return;
-			}
 		}
 	}
 	else {
@@ -654,10 +650,12 @@ void Processor::process() //Process next instruction and return cycles to wait
 		}
 		catch (Error e)
 		{
-			if (e == Error::SILENT) {
-				return;
-			}
 		}
+	}
+
+	for (int i = 0; i < devicesLen; i++)
+	{
+		devices[i]->update();
 	}
 };
 
@@ -689,4 +687,9 @@ void Processor::interruptDevice(int addr)
 {
 	queuedInterrupt = addr;
 	held = true;
+}
+
+void Processor::charge(int amnt)
+{
+	debt += amnt;
 }

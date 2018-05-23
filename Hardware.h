@@ -1,16 +1,26 @@
 #pragma once
 #include "Interruptable.h"
-#include "HardwareType.h"
-#include "Processor.h"
+	#include "Processor.h"
+
+#include <cstdint>
 
 class Hardware : public Interruptable
 {
-	HardwareType type;
-	Processor * parent;
-
 	bool hasReceived = false;
 
+	virtual void process() = 0;
+
+	bool interruptHook(int) override { process(); hasReceived = true; return false; };
+
 public:
-	Hardware(Processor *, HardwareType type);
+	Processor * parent;
+
+	uint32_t type;
+	uint32_t manufacturer;
+	uint16_t version;
+
+	virtual void update() {};
+
+	Hardware(Processor *, uint32_t, uint32_t, uint16_t);
 };
 
