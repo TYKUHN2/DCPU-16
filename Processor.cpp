@@ -12,9 +12,9 @@ enum class Error {
 	DEVICE_OVERLOAD
 };
 
-Processor::Processor(char * rom) //Initializes a new processor. Expects null-terminated endian-fixed ROM input
+Processor::Processor(Executable rom) //Initializes a new processor. Expects null-terminated endian-fixed ROM input
 {
-	std::strcpy((char*)memory, rom);
+	std::memcpy(memory, rom.data, rom.size);
 }
 
 int Processor::getValue(char op) //Gets value represented by an operand
@@ -699,7 +699,7 @@ void Processor::process() //Process next instruction and return cycles to wait
 
 	int cmd = memory[PC];
 
-	char first = cmd >> 10;
+	uint8_t first = cmd >> 10;
 
 	if (cmd & 0b11111) {
 		char second = (cmd >> 5) & 0b11111;

@@ -25,10 +25,8 @@ int main(int argc, char* args)
 
 	Executable rom{ "./rom.dcpu" };
 
-	char * romData = nullptr;
-
 	try {
-		romData = rom.load();
+		rom.load();
 	}
 	catch (FileError e) {
 		switch (e) {
@@ -39,7 +37,7 @@ int main(int argc, char* args)
 		}
 	}
 
-	Processor main{ romData };
+	Processor main{ rom };
 
 	LEM1802 monitor{ &main };
 

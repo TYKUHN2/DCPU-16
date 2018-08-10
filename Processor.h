@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Executable.h"
 #include "Registers.h"
 #include "Interruptable.h"
 
@@ -46,7 +46,7 @@ public:
 	Registers registers;
 	int memory[65536];
 	
-	Processor(char*);
+	Processor(Executable);
 
 	bool inDebt();
 	void release();

@@ -6,7 +6,7 @@
 		BIG_ENDIAN = 0x00FF
 	};
 
-	static constexpr union { unsigned char bytes[2] = { 0xFF, 0x00 }; int val; } order_test;
+	constexpr union { unsigned char bytes[2] = { 0xFF, 0x00 }; int val; } order_test;
 
 	#define BYTE_ORDER order_test.val
 

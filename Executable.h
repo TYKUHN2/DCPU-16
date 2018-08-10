@@ -11,9 +11,13 @@ class Executable
 	std::string file;
 
 public:
+	char * data = nullptr;
+
+	int size = -1; //Updated every load, only -1 if never loaded
+
 	Executable(std::string);
 	~Executable();
 
-	char* load();
+	void load();
 };
 
