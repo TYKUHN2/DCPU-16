@@ -1,5 +1,5 @@
 #include "Monitor.h"
-
+#include <SFML/Window/Event.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 
 Monitor::Monitor(unsigned int x, unsigned int y, unsigned int depth)
@@ -11,8 +11,13 @@ Monitor::Monitor(unsigned int x, unsigned int y, unsigned int depth)
 	window.create( mode, title, style );
 }
 
-
 Monitor::~Monitor()
 {
 	window.close();
+}
+
+void Monitor::tick()
+{
+	sf::Event nextEvent;
+	window.pollEvent(nextEvent);
 }

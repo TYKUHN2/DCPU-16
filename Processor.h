@@ -54,7 +54,7 @@ public:
 
 	void connect(Hardware *);
 
-	void process() override;
+	void tick() override;
 
 	void interruptDevice(int); //Probably to be replaced with more direct access
 

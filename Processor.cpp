@@ -667,7 +667,7 @@ void Processor::singleParam(char param, char opcode) //Process single-operand in
 	}
 }
 
-void Processor::process() //Process next instruction and return cycles to wait
+void Processor::tick() //Process next instruction and return cycles to wait
 {
 	if (debt)
 	{

@@ -47,7 +47,7 @@ int main(int argc, char* args)
 
 	while (true)
 	{
-		main.process();
+		Ticking::doTick();
 		std::this_thread::sleep_for(period);
 	}
 
