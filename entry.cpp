@@ -41,8 +41,6 @@ int main(int argc, char* args)
 
 	LEM1802 monitor{ &main };
 
-	delete romData;
-
 	std::chrono::duration<float, std::ratio<1>> period{ 1 / clock };
 
 	while (true)
