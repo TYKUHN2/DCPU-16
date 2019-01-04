@@ -17,7 +17,7 @@ Processor::Processor(Executable rom) //Initializes a new processor. Expects null
 	std::memcpy(memory, rom.data, rom.size);
 }
 
-int Processor::getValue(char op) //Gets value represented by an operand
+uint16_t Processor::getValue(uint8_t op) //Gets value represented by an operand
 {
 	switch (op)
 	{
@@ -47,7 +47,7 @@ int Processor::getValue(char op) //Gets value represented by an operand
 	case 0xE:
 	case 0xF:
 	{
-		int ptr = getValue(op - 0x08);
+		uint16_t ptr = getValue(op - 0x08);
 		return memory[ptr];
 	}
 
@@ -61,7 +61,7 @@ int Processor::getValue(char op) //Gets value represented by an operand
 	case 0x17:
 	{
 		debt++;
-		int ptr = getValue(op - 0x10);
+		uint16_t ptr = getValue(op - 0x10);
 		ptr += memory[PC++];
 		return memory[ptr];
 	}
@@ -73,7 +73,7 @@ int Processor::getValue(char op) //Gets value represented by an operand
 	case 0x1A:
 	{
 		debt++;
-		int ptr = SP + memory[PC++]; //Read extra word and skip extra word on for next execution
+		uint16_t ptr = SP + memory[PC++]; //Read extra word and skip extra word on for next execution
 		return memory[ptr];
 	}
 
@@ -87,7 +87,7 @@ int Processor::getValue(char op) //Gets value represented by an operand
 	case 0x1E:
 	{
 		debt++;
-		int ptr = memory[PC++];
+		uint16_t ptr = memory[PC++];
 		return memory[ptr]; //Read extra word and skip extra word on for next execution
 	}
 	
@@ -102,7 +102,7 @@ int Processor::getValue(char op) //Gets value represented by an operand
 	}
 }
 
-int * Processor::getDest(char op)
+uint16_t * Processor::getDest(uint8_t op)
 {
 	switch (op)
 	{
@@ -132,7 +132,7 @@ int * Processor::getDest(char op)
 	case 0xE:
 	case 0xF:
 	{
-		int ptr = getValue(op - 0x08);
+		uint16_t ptr = getValue(op - 0x08);
 		return memory + ptr;
 	}
 
@@ -146,7 +146,7 @@ int * Processor::getDest(char op)
 	case 0x17:
 	{
 		debt++;
-		int ptr = getValue(op - 0x10);
+		uint16_t ptr = getValue(op - 0x10);
 		ptr += memory[PC++];
 		return memory + ptr;
 	}
@@ -158,7 +158,7 @@ int * Processor::getDest(char op)
 	case 0x1A:
 	{
 		debt++;
-		int ptr = SP + memory[PC++]; //Read extra word and skip extra word on for next execution
+		uint16_t ptr = SP + memory[PC++]; //Read extra word and skip extra word on for next execution
 		return memory + ptr;
 	}
 
@@ -172,7 +172,7 @@ int * Processor::getDest(char op)
 	case 0x1E:
 	{
 		debt++;
-		int ptr = memory[PC++];
+		uint16_t ptr = memory[PC++];
 		return memory + ptr; //Read extra word and skip extra word on for next execution
 	}
 
@@ -184,12 +184,12 @@ int * Processor::getDest(char op)
 	}
 }
 
-int Processor::peek(char op) //Get's value without incrementing PC incase of extra word (for read then set purposes)
+uint16_t Processor::peek(uint8_t op) //Get's value without incrementing PC incase of extra word (for read then set purposes)
 {
-	int temp = PC;
-	int temp2 = debt;
+	uint8_t temp = PC;
+	uint8_t temp2 = debt;
 
-	int val = getValue(op);
+	uint16_t val = getValue(op);
 
 	PC = temp;
 	debt = temp2;
@@ -199,7 +199,7 @@ int Processor::peek(char op) //Get's value without incrementing PC incase of ext
 void Processor::conditionalSkip() //Conditional evaluated false, perform chain skip
 {
 	while (true) {
-		int next = getValue(0x1E); //Get next word using shortcut 0x1E = next word also advances debt
+		uint16_t next = getValue(0x1E); //Get next word using shortcut 0x1E = next word also advances debt
 
 		char first = next >> 10;
 		char second = (next >> 5) & 0b11111;
@@ -217,7 +217,7 @@ void Processor::conditionalSkip() //Conditional evaluated false, perform chain s
 	}
 }
 
-void Processor::doubleParam(char first, char second, char opcode) //Process dual-operand instruction
+void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Process dual-operand instruction
 {
 	/*General operation execution sequence
 		1) Read values from relevant operands
@@ -232,9 +232,9 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case SET:
 	{
 		debt++;
-		int a = getValue(first);
+		uint16_t a = getValue(first);
 
-		int * dest = getDest(second);
+		uint16_t * dest = getDest(second);
 
 		*dest = a;
 		return;
@@ -243,10 +243,10 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case ADD:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
-		int result = a + b;
+		uint16_t result = a + b;
 
 		if (result < a)
 		{
@@ -264,10 +264,10 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case SUB:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
-		int result = b - a;
+		uint16_t result = b - a;
 
 		if (result > b)
 		{
@@ -285,10 +285,10 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case MUL:
 	{
 		debt += 2;
-		unsigned int a = getValue(first);
-		unsigned int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
-		int result = b * a;
+		uint16_t result = b * a;
 
 		EX = ((a*b) >> 16) & 0xFFFF;
 
@@ -299,10 +299,10 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case MLI:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = peek(second);
+		int16_t a = getValue(first);
+		int16_t b = peek(second);
 
-		int result = a * b;
+		int16_t result = a * b;
 
 		EX = ((a*b) >> 16) & 0xFFFF;
 
@@ -311,11 +311,10 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	}
 
 	case DIV:
-	case DVI:
 	{
 		debt += 3;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a= getValue(first);
+		uint16_t b = peek(second);
 
 		if (a == 0) {
 			EX = 0;
@@ -324,7 +323,30 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 		}
 		else
 		{
-			int result = b / a;
+			uint16_t result = b / a;
+
+			EX = ((b << 16) / a) & 0xFFFF;
+
+			*getDest(second) = result;
+		}
+
+		return;
+	}
+
+	case DVI:
+	{
+		debt += 3;
+		int16_t a = getValue(first);
+		int16_t b = peek(second);
+
+		if (a == 0) {
+			EX = 0;
+
+			*getDest(second) = 0;
+		}
+		else
+		{
+			int16_t result = b / a;
 
 			EX = ((b << 16) / a) & 0xFFFF;
 
@@ -335,13 +357,30 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	}
 
 	case MOD:
+	{
+		debt += 3;
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
+
+		uint16_t * dest = getDest(second);
+
+		if (a == 0) {
+			*dest = 0;
+		}
+		else
+		{
+			*dest = b % a;
+		}
+		break;
+	}
+
 	case MDI:
 	{
 		debt += 3;
-		int a = getValue(first);
-		int b = peek(second);
+		int16_t a = getValue(first);
+		int16_t b = peek(second);
 
-		int * dest = getDest(second);
+		uint16_t * dest = getDest(second);
 
 		if (a == 0) {
 			*dest = 0;
@@ -356,8 +395,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case AND:
 	{
 		debt++;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
 		*getDest(second) = b & a;
 
@@ -367,8 +406,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case BOR:
 	{
 		debt++;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
 		*getDest(second) = b | a;
 
@@ -378,8 +417,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case XOR:
 	{
 		debt++;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
 		*getDest(second) = b ^ a;
 
@@ -387,11 +426,23 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	}
 
 	case SHR:
+	{
+		debt++;
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
+
+		EX = ((b << 16) >> a) & 0xFFFF;
+
+		*getDest(second) = b >> a;
+
+		return;
+	}
+
 	case ASR:
 	{
 		debt++;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		int16_t b = peek(second);
 
 		EX = ((b << 16) >> a) & 0xFFFF;
 
@@ -403,8 +454,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case SHL:
 	{
 		debt++;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
 		EX = ((b << a) >> 16) & 0xFFFF;
 
@@ -416,8 +467,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFB:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = getValue(second);
+		uint16_t a = getValue(first);
+		uint16_t b = getValue(second);
 
 		if ((b & a) == 0) {
 			conditionalSkip();
@@ -428,8 +479,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFC:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = getValue(second);
+		uint16_t a = getValue(first);
+		uint16_t b = getValue(second);
 
 		if (b & a) {
 			conditionalSkip();
@@ -440,8 +491,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFE:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = getValue(second);
+		uint16_t a = getValue(first);
+		uint16_t b = getValue(second);
 
 		if (b != a) {
 			conditionalSkip();
@@ -452,8 +503,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFN:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = getValue(second);
+		uint16_t a = getValue(first);
+		uint16_t b = getValue(second);
 
 		if (b == a) {
 			conditionalSkip();
@@ -464,8 +515,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFG:
 	{
 		debt += 2;
-		unsigned int a = getValue(first);
-		unsigned int b = getValue(second);
+		uint16_t a = getValue(first);
+		uint16_t b = getValue(second);
 
 		if (b <= a) {
 			conditionalSkip();
@@ -476,8 +527,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFA:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = getValue(second);
+		int16_t a = getValue(first);
+		int16_t b = getValue(second);
 
 		if (b <= a) {
 			conditionalSkip();
@@ -488,8 +539,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFL:
 	{
 		debt += 2;
-		unsigned int a = getValue(first);
-		unsigned int b = getValue(second);
+		uint16_t a = getValue(first);
+		uint16_t b = getValue(second);
 
 		if (b >= a) {
 			conditionalSkip();
@@ -500,8 +551,8 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case IFU:
 	{
 		debt += 2;
-		int a = getValue(first);
-		int b = getValue(second);
+		int16_t a = getValue(first);
+		int16_t b = getValue(second);
 
 		if (b >= a) {
 			conditionalSkip();
@@ -512,10 +563,10 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case ADX:
 	{
 		debt += 3;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
-		int result = b + a + EX;
+		uint16_t result = b + a + EX;
 
 		if (result < b)
 		{
@@ -531,10 +582,10 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case SBX:
 	{
 		debt += 3;
-		int a = getValue(first);
-		int b = peek(second);
+		uint16_t a = getValue(first);
+		uint16_t b = peek(second);
 
-		int result = b - a + EX;
+		uint16_t result = b - a + EX;
 
 		if (result < b)
 		{
@@ -550,7 +601,7 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case STI:
 	{
 		debt += 2;
-		int a = getValue(first);
+		uint16_t a = getValue(first);
 
 		registers.i++;
 		registers.j++;
@@ -562,7 +613,7 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	case STD:
 	{
 		debt += 2;
-		int a = getValue(first);
+		uint16_t a = getValue(first);
 
 		registers.i--;
 		registers.j--;
@@ -573,7 +624,7 @@ void Processor::doubleParam(char first, char second, char opcode) //Process dual
 	}
 }
 
-void Processor::singleParam(char param, char opcode) //Process single-operand instruction
+void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-operand instruction
 {
 	/*General operation execution sequence
 	1) Read values from relevant operands
@@ -697,13 +748,13 @@ void Processor::tick() //Process next instruction and return cycles to wait
 		}
 	}
 
-	int cmd = memory[PC];
+	uint16_t cmd = memory[PC++];
 
 	uint8_t first = cmd >> 10;
 
 	if (cmd & 0b11111) {
-		char second = (cmd >> 5) & 0b11111;
-		char opcode = cmd & 0b11111;
+		uint8_t second = (cmd >> 5) & 0b11111;
+		uint8_t opcode = cmd & 0b11111;
 
 		try //Catch silent errors
 		{
@@ -731,7 +782,7 @@ void Processor::tick() //Process next instruction and return cycles to wait
 	}
 };
 
-void overflow(int * mem) //Randomly corrupts processor memory
+void overflow(uint16_t * mem) //Randomly corrupts processor memory
 {
 
 }

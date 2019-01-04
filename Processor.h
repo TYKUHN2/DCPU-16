@@ -18,10 +18,10 @@ class Processor : public Interruptable, public Ticking
 {
 	PowerMode mode = PowerMode::OFF;
 
-	int PC = 0;
-	int SP = 0;
-	int EX = 0;
-	int IA = 0;
+	uint16_t PC = 0;
+	uint16_t SP = 0;
+	uint16_t EX = 0;
+	uint16_t IA = 0;
 
 	bool held = false;
 	bool iq = false;
@@ -33,18 +33,18 @@ class Processor : public Interruptable, public Ticking
 
 	char debt = 0;
 
-	void doubleParam(char, char, char);
-	void singleParam(char, char);
+	void doubleParam(uint8_t, uint8_t, uint8_t);
+	void singleParam(uint8_t, uint8_t);
 
-	int getValue(char);
-	int * getDest(char);
-	int peek(char);
+	uint16_t getValue(uint8_t);
+	uint16_t * getDest(uint8_t);
+	uint16_t peek(uint8_t);
 
 	void conditionalSkip();
 
 public:
 	Registers registers;
-	int memory[65536];
+	uint16_t memory[65536];
 	
 	Processor(Executable);
 

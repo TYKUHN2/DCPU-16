@@ -1,13 +1,13 @@
 #pragma once
 struct Registers //General purpose registers
 {
-	int a = 0;
-	int b = 0;
-	int c = 0;
-	int x = 0;
-	int y = 0;
-	int z = 0;
-	int i = 0;
-	int j = 0;
+	uint16_t a = 0;
+	uint16_t b = 0;
+	uint16_t c = 0;
+	uint16_t x = 0;
+	uint16_t y = 0;
+	uint16_t z = 0;
+	uint16_t i = 0;
+	uint16_t j = 0;
 };
 
