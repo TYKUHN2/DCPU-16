@@ -25,6 +25,7 @@ class Processor : public Interruptable, public Ticking
 
 	bool held = false;
 	bool iq = false;
+	bool crashed = false;
 
 	int devicesLen = 0;
 	Hardware * devices[65535];
@@ -35,6 +36,8 @@ class Processor : public Interruptable, public Ticking
 
 	void doubleParam(uint8_t, uint8_t, uint8_t);
 	void singleParam(uint8_t, uint8_t);
+
+	void validateDevice(uint16_t);
 
 	uint16_t getValue(uint8_t);
 	uint16_t * getDest(uint8_t);

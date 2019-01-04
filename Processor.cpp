@@ -9,8 +9,16 @@
 
 enum class Error {
 	SILENT,
-	DEVICE_OVERLOAD
+	DEVICE_OVERLOAD,
+	INVALID_DEVICE
 };
+
+void Processor::validateDevice(uint16_t devicenum) {
+	if (devicenum >= devicesLen) {
+		crashed = true;
+		throw Error::INVALID_DEVICE;
+	}
+}
 
 Processor::Processor(Executable rom) //Initializes a new processor. Expects null-terminated endian-fixed ROM input
 {
@@ -688,7 +696,10 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 	{
 		debt += 4;
 
-		Hardware * device = devices[registers.a];
+		uint16_t id = getValue(param);
+		validateDevice(id);
+
+		Hardware * device = devices[id];
 
 		registers.a = device->type & 0xFFFF;
 		registers.b = device->type >> 16;
@@ -701,10 +712,16 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 	}
 
 	case HWI:
+	{
 		debt += 4;
-		interruptDevice(getValue(param));
+
+		uint16_t id = getValue(param);
+		validateDevice(id);
+
+		interruptDevice(id);
 		held = true;
 		break;
+	}
 
 	case LOG:
 		debt++;
@@ -723,6 +740,11 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 void Processor::tick() //Process next instruction and return cycles to wait
 {
+	if (crashed)
+	{
+		return;
+	}
+
 	if (debt)
 	{
 		debt--;
