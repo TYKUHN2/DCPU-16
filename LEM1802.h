@@ -5,9 +5,9 @@
 class LEM1802 :
 	public Monitor, public Hardware
 {
-	int * sram = nullptr;
-	int * fram = nullptr;
-	int * pram = nullptr;
+	uint16_t * sram = nullptr;
+	uint16_t * fram = nullptr;
+	uint16_t * pram = nullptr;
 
 	uint8_t border = 0;
 

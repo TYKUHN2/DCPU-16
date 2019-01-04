@@ -45,7 +45,7 @@ const uint16_t default_palette[] = { //Ripped from https://gist.github.com/Sylva
 	0x0555, 0x055f, 0x05f5, 0x05ff, 0x0f55, 0x0f5f, 0x0ff5, 0x0fff
 };
 
-void dumpFont(int * mem)
+void dumpFont(uint16_t * mem)
 {
 	for (char i = 0; i < 128; i++)
 	{
@@ -53,7 +53,7 @@ void dumpFont(int * mem)
 	}
 }
 
-void dumpPalette(int * mem)
+void dumpPalette(uint16_t * mem)
 {
 	for (char i = 0; i < 16; i++)
 	{
@@ -61,7 +61,7 @@ void dumpPalette(int * mem)
 	}
 }
 
-uint32_t getFont(int * ram, char offset)
+uint32_t getFont(uint16_t * ram, char offset)
 {
 	if (ram == nullptr)
 	{
@@ -73,7 +73,7 @@ uint32_t getFont(int * ram, char offset)
 	}
 }
 
-uint16_t getPalette(int * ram, char offset)
+uint16_t getPalette(uint16_t * ram, char offset)
 {
 	if (ram == nullptr)
 	{
@@ -104,7 +104,7 @@ LEM1802::~LEM1802()
 
 void LEM1802::process() {
 	Registers registers = parent->registers;
-	int * memory = parent->memory;
+	uint16_t * memory = parent->memory;
 
 	switch (registers.a)
 	{
