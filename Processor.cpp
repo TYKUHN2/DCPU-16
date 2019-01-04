@@ -763,7 +763,7 @@ void Processor::tick() //Process next instruction and return cycles to wait
 		{
 			doubleParam(first, second, opcode); //Process two operand instruction
 		}
-		catch (Error e)
+		catch ([[maybe_unused]] Error e)
 		{
 		}
 	}
@@ -774,7 +774,7 @@ void Processor::tick() //Process next instruction and return cycles to wait
 		{
 			singleParam(first, opcode); //Process one operand instruction
 		}
-		catch (Error e)
+		catch ([[maybe_unused]] Error e)
 		{
 		}
 	}
