@@ -11,7 +11,7 @@ class Executable
 	std::string file;
 
 public:
-	char * data = nullptr;
+	uint8_t * data = nullptr;
 
 	int size = -1; //Updated every load, only -1 if never loaded
 

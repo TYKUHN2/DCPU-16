@@ -16,7 +16,7 @@ void Executable::load() { //Loads the executable and returns it. Throws on error
 		delete data;
 	}
 
-	std::FILE * handle = fopen(file.c_str(), "r");
+	std::FILE * handle = fopen(file.c_str(), "rb");
 	
 	if (handle == NULL) {
 		throw FileError::NO_LOAD;
@@ -32,14 +32,14 @@ void Executable::load() { //Loads the executable and returns it. Throws on error
 
 	rewind(handle);
 
-	data = new char[size];
+	data = new uint8_t[size];
 
 	fread(data, 1, size, handle);
 	fclose(handle);
 
 #ifdef BYTE_ORDER
-	if (BYTE_ORDER == BIG_ENDIAN) {
-		swapBO(data, 2, size / 2);
+	if (BYTE_ORDER == LITTLE_ENDIAN) {
+		swapBO((char*)data, 2, size / 2);
 	}
 #else
 	#if __BYTE_ORDER__ == __BIG_ENDIAN__
