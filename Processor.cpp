@@ -163,11 +163,11 @@ uint16_t * Processor::getDest(uint8_t op)
 	}
 
 	case 0x1B:
-		return memory + SP;
+		return &SP;
 	case 0x1C:
-		return memory + PC;
+		return &PC;
 	case 0x1D:
-		return memory + EX;
+		return &EX;
 
 	case 0x1E:
 	{
