@@ -638,10 +638,13 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 	switch (opcode)
 	{
 	case JSR:
+	{
 		debt += 3;
+		uint16_t temp = getValue(param);
 		PUSH(PC);
-		PC = getValue(param);
+		PC = temp;
 		break;
+	}
 
 	case INT: //FIX ACCORDING TO SPEC (SWI)
 		debt += 4;
