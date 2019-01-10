@@ -1,9 +1,7 @@
 #include "LEM1802.h"
 #include "Debug.h"
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/VertexBuffer.hpp>
 #include <SFML/Window/Event.hpp>
-
+#include <SFML/Graphics.hpp>
 
 const uint16_t default_font[] = { //Ripped from https://gist.github.com/SylvainBoilard/4645708 THANKS!
 	0xb79e, 0x388e, 0x722c, 0x75f4, 0x19bb, 0x7f8f, 0x85f9, 0xb158,
@@ -61,7 +59,7 @@ void dumpPalette(uint16_t * mem)
 	}
 }
 
-uint32_t getFont(uint16_t * ram, char offset)
+uint32_t getFont(const uint16_t * ram, char offset)
 {
 	if (ram == nullptr)
 	{
@@ -73,7 +71,7 @@ uint32_t getFont(uint16_t * ram, char offset)
 	}
 }
 
-uint16_t getPalette(uint16_t * ram, char offset)
+uint16_t getPalette(const uint16_t * ram, char offset)
 {
 	if (ram == nullptr)
 	{
@@ -85,7 +83,7 @@ uint16_t getPalette(uint16_t * ram, char offset)
 	}
 }
 
-sf::Color compileColor(uint16_t raw)
+sf::Color compileColor(const uint16_t raw)
 {
 	uint8_t r = (raw >> 8) & 0xF;
 	uint8_t g = (raw >> 4) & 0xF;
