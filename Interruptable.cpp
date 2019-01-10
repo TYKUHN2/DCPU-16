@@ -2,6 +2,10 @@
 
 int Interruptable::getInterrupt()
 {
+	if (interrupts == 0) {
+		return -1;
+	}
+
 	return interruptQueue[--interrupts]; //Pull message and essentially pop it (trigger)
 }
 

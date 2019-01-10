@@ -216,7 +216,7 @@ void LEM1802::draw(int x, int y, uint32_t glyph, uint16_t fg, uint16_t bg, bool 
 	window.draw(corners, 4, sf::PrimitiveType::Quads, state);
 }
 
-void LEM1802::update()
+void LEM1802::tick()
 {
 	if (sram == nullptr) //Screen is disconnected don't bother redrawing
 	{

@@ -18,8 +18,6 @@ public:
 	uint32_t manufacturer;
 	uint16_t version;
 
-	virtual void update() {};
-
 	Hardware(Processor *, uint32_t, uint32_t, uint16_t);
 };
 

@@ -800,11 +800,6 @@ void Processor::tick() //Process next instruction and return cycles to wait
 		{
 		}
 	}
-
-	for (int i = 0; i < devicesLen; i++)
-	{
-		devices[i]->update();
-	}
 };
 
 void overflow(uint16_t * mem) //Randomly corrupts processor memory

@@ -16,7 +16,7 @@ class LEM1802 :
 	void draw(int, int, uint32_t, uint16_t, uint16_t, bool);
 
 public:
-	void update() override;
+	void tick() override;
 
 	LEM1802(Processor*);
 	~LEM1802();
