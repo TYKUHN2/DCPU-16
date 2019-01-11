@@ -746,7 +746,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 void Processor::tick() //Process next instruction and return cycles to wait
 {
-	if (crashed)
+	if (crashed || mode == PowerMode::SLEEP)
 	{
 		return;
 	}
@@ -759,6 +759,7 @@ void Processor::tick() //Process next instruction and return cycles to wait
 	else if (queuedInterrupt != 0xFFFF)
 	{
 		devices[queuedInterrupt]->interrupt(0);
+		queuedInterrupt = 0xFFFF;
 	}
 	else if (held)
 	{
