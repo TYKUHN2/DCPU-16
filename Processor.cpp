@@ -194,8 +194,8 @@ uint16_t * Processor::getDest(uint8_t op)
 
 uint16_t Processor::peek(uint8_t op) //Get's value without incrementing PC incase of extra word (for read then set purposes)
 {
-	uint8_t temp = PC;
-	uint8_t temp2 = debt;
+	uint16_t temp = PC;
+	char temp2 = debt;
 
 	uint16_t val = getValue(op);
 
