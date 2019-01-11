@@ -213,14 +213,20 @@ void Processor::conditionalSkip() //Conditional evaluated false, perform chain s
 		char second = (next >> 5) & 0b11111;
 		char opcode = next & 0b11111;
 
-		int temp = debt;
-		getValue(first); //Get value of A incase it reads a word (and advances PC)
-		getValue(second); //Get value of B incase it reads a word (and advances PC)
-		debt = temp; //Revert changes to debt since pipeline is skipped
-
-		if (opcode < 0x0F || opcode > 0x18) //If opcode isn't a conditional
+		if (opcode > 0x0F && opcode < 0x18)
 		{
-			return;  //We're done advancing PC so just leave
+			char temp = debt;
+			uint16_t temp2 = SP;
+
+			getValue(first);
+			getValue(second);
+
+			debt = temp;
+			SP = temp2;
+		}
+		else
+		{
+			return;
 		}
 	}
 }
