@@ -262,6 +262,8 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = a + b;
 
+		*getDest(second) = result;
+
 		if (result < a)
 		{
 			EX = 0x1;
@@ -270,8 +272,6 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		{
 			EX = 0x0;
 		}
-
-		*getDest(second) = result;
 		return;
 	}
 
@@ -283,6 +283,8 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b - a;
 
+		*getDest(second) = result;
+
 		if (result > b)
 		{
 			EX = 0xFFFF;
@@ -291,8 +293,6 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		{
 			EX = 0x0;
 		}
-
-		*getDest(second) = result;
 		return;
 	}
 
@@ -304,9 +304,9 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b * a;
 
-		EX = ((a*b) >> 16) & 0xFFFF;
-
 		*getDest(second) = result;
+
+		EX = ((a*b) >> 16) & 0xFFFF;
 		return;
 	}
 
@@ -318,9 +318,9 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		int16_t result = a * b;
 
-		EX = ((a*b) >> 16) & 0xFFFF;
-
 		*getDest(second) = result;
+
+		EX = ((a*b) >> 16) & 0xFFFF;
 		return;
 	}
 
@@ -331,17 +331,16 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t b = peek(second);
 
 		if (a == 0) {
-			EX = 0;
-
 			*getDest(second) = 0;
+			EX = 0;
 		}
 		else
 		{
 			uint16_t result = b / a;
 
-			EX = ((b << 16) / a) & 0xFFFF;
-
 			*getDest(second) = result;
+
+			EX = ((b << 16) / a) & 0xFFFF;
 		}
 
 		return;
@@ -354,17 +353,16 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		int16_t b = peek(second);
 
 		if (a == 0) {
-			EX = 0;
-
 			*getDest(second) = 0;
+			EX = 0;
 		}
 		else
 		{
 			int16_t result = b / a;
 
-			EX = ((b << 16) / a) & 0xFFFF;
-
 			*getDest(second) = result;
+
+			EX = ((b << 16) / a) & 0xFFFF;
 		}
 
 		return;
@@ -385,7 +383,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		{
 			*dest = b % a;
 		}
-		break;
+		return;
 	}
 
 	case MDI:
@@ -403,7 +401,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		{
 			*dest = b % a;
 		}
-		break;
+		return;
 	}
 
 	case AND:
@@ -414,7 +412,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		*getDest(second) = b & a;
 
-		break;
+		return;
 	}
 
 	case BOR:
@@ -425,7 +423,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		*getDest(second) = b | a;
 
-		break;
+		return;
 	}
 
 	case XOR:
@@ -436,7 +434,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		*getDest(second) = b ^ a;
 
-		break;
+		return;
 	}
 
 	case SHR:
@@ -471,9 +469,9 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		EX = ((b << a) >> 16) & 0xFFFF;
-
 		*getDest(second) = b << a;
+
+		EX = ((b << a) >> 16) & 0xFFFF;
 
 		return;
 	}
@@ -487,7 +485,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if ((b & a) == 0) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case IFC:
@@ -499,7 +497,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if (b & a) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case IFE:
@@ -511,7 +509,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if (b != a) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case IFN:
@@ -523,7 +521,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if (b == a) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case IFG:
@@ -535,7 +533,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if (b <= a) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case IFA:
@@ -547,7 +545,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if (b <= a) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case IFL:
@@ -559,7 +557,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if (b >= a) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case IFU:
@@ -571,7 +569,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		if (b >= a) {
 			conditionalSkip();
 		}
-		break;
+		return;
 	}
 
 	case ADX:
@@ -582,6 +580,8 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b + a + EX;
 
+		*getDest(second) = result;
+
 		if (result < b)
 		{
 			EX = 1;
@@ -590,7 +590,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		{
 			EX = 0;
 		}
-		*getDest(second) = result;
+		return;
 	}
 
 	case SBX:
@@ -601,6 +601,8 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b - a + EX;
 
+		*getDest(second) = result;
+
 		if (result < b)
 		{
 			EX = 1;
@@ -609,7 +611,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		{
 			EX = 0;
 		}
-		*getDest(second) = result;
+		return;
 	}
 
 	case STI:
@@ -617,10 +619,10 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt += 2;
 		uint16_t a = getValue(first);
 
+		*getDest(second) = a;
+
 		registers.i++;
 		registers.j++;
-
-		*getDest(second) = a;
 		return;
 	}
 
@@ -629,10 +631,10 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt += 2;
 		uint16_t a = getValue(first);
 
+		*getDest(second) = a;
+
 		registers.i--;
 		registers.j--;
-
-		*getDest(second) = a;
 		return;
 	}
 	}
@@ -657,7 +659,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 		uint16_t temp = getValue(param);
 		PUSH(PC);
 		PC = temp;
-		break;
+		return;
 	}
 
 	case INT: //FIX ACCORDING TO SPEC (SWI)
@@ -668,19 +670,19 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 	case IAG:
 		debt++;
 		*getDest(param) = IA;
-		break;
+		return;
 
 	case IAS:
 		debt++;
 		IA = getValue(param);
-		break;
+		return;
 
 	case RFI:
 		debt += 3;
 		registers.a = POP;
 		PC = POP;
 		iq = false;
-		break;
+		return;
 
 	case IAQ:
 		debt += 2;
@@ -691,12 +693,12 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 		{
 			iq = false;
 		}
-		break;
+		return;
 
 	case HWN:
 		debt += 2;
 		*getDest(param) = devicesLen;
-		break;
+		return;
 
 	case HWQ:
 	{
@@ -714,7 +716,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 		registers.x = device->manufacturer & 0xFFFF;
 		registers.y = device->manufacturer >> 16;
-		break;
+		return;
 	}
 
 	case HWI:
@@ -726,21 +728,21 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 		interruptDevice(id);
 		held = true;
-		break;
+		return;
 	}
 
 	case LOG:
 		debt++;
 		log(getValue(param));
-		break;
+		return;
 
 	case BRK:
 		brk(getValue(param));
-		break;
+		return;
 
 	case HLT:
 		mode = PowerMode::SLEEP;
-		break;
+		return;
 	}
 }
 

@@ -1,4 +1,3 @@
-Patch I/J EX bug (Effects are written first causing potential conflict when write operand is an effect)
 Implement more advanced scheduler
 Randomized memory corruption on interrupt queue overflow
 Implement other non-LEM1802 displays
