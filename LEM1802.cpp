@@ -152,22 +152,10 @@ void LEM1802::process() {
 	parent->release();
 }
 
-void LEM1802::draw(int x, int y, uint32_t glyph, uint16_t fg, uint16_t bg, bool blink)
+sf::VertexArray compileCharacter(sf::Color fColor, sf::Color bColor, uint32_t glyph)
 {
-	if (blink)
-	{
-		Debug::print("BLINK NOT IMPLEMENTED YET!");
-	}
+	sf::VertexArray character{sf::Points, 32};
 
-	//Preconstruct colors
-	sf::Color fColor = compileColor(fg);
-	sf::Color bColor = compileColor(bg);
-
-	//Prepare cell for writing
-	sf::RenderTexture cell;
-	sf::Vertex buffer[32];
-
-	//Loop through each pixel in the cell
 	for (char i = 0; i < 4; i++)
 	{
 		uint8_t column = (glyph >> (i * 8)) & 0xFF; //Get column from the glyph and constrain to 8 bits
@@ -187,31 +175,43 @@ void LEM1802::draw(int x, int y, uint32_t glyph, uint16_t fg, uint16_t bg, bool 
 				pixel.color = bColor;
 			}
 
-			buffer[(i * 8) + j] = pixel; //Write out pixel to buffer
+			character[(i * 8) + j] = pixel; //Write out pixel to buffer
 		}
 	}
 
-	//Draw the cell to a texture
-	cell.draw(buffer, 32, sf::PrimitiveType::Points);
-	sf::Texture cellTex = cell.getTexture();
+	return character;
+}
 
-	//Construct physical cell for drawing
-	sf::Vertex corners[4];
-	for (char i = 0; i < 4; i++)
+void LEM1802::draw(int x, int y, uint32_t glyph, uint16_t fg, uint16_t bg, bool blink)
+{
+	if (blink)
 	{
-		int realX = (x + (i % 2)) * 4;
-		int realY = y + (i / 2) * 8;
-		sf::Vector2f coords{ (float)realX, (float)realY };
-
-		sf::Vector2f texCoords{ (float)(i % 2) * 4, (float)((int)(i / 2)) * 8 };
-
-		sf::Vertex corner{ coords, texCoords };
-		corners[i] = corner;
+		Debug::print("BLINK NOT IMPLEMENTED YET!");
 	}
 
+	//Preconstruct colors
+	sf::Color fColor = compileColor(fg);
+	sf::Color bColor = compileColor(bg);
+
+	fColor = { 255,0,0 };
+	bColor = { 255,0,0 };
+
+	//Prepare cell for writing
+	sf::RenderTexture cell;
+
+	//Compile character
+	sf::VertexArray character = compileCharacter(fColor, bColor, glyph);
+
+	//Draw the cell to a texture
+	cell.draw(character);
+	sf::Texture cellTex = cell.getTexture();
+
+	sf::RectangleShape realCell{ {4.0, 8.0} };
+	realCell.setPosition(x, y);
+	realCell.setTexture(&cellTex);
+
 	//Draw out cell to screen
-	sf::RenderStates state{ &cellTex };
-	window.draw(corners, 4, sf::PrimitiveType::Quads, state);
+	window.draw(realCell);
 }
 
 void LEM1802::tick()
