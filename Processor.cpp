@@ -1,7 +1,7 @@
 #include "Processor.h"
 #include <cstring>
 #include "Instructions.h"
-#include "Hardware.h"
+#include "Peripheral.h"
 #include "Debug.h"
 
 #define PUSH(val) memory[--SP] = val
@@ -707,7 +707,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 		uint16_t id = getValue(param);
 		validateDevice(id);
 
-		Hardware * device = devices[id];
+		Peripheral * device = devices[id];
 
 		registers.a = device->type & 0xFFFF;
 		registers.b = device->type >> 16;
@@ -821,7 +821,7 @@ void Processor::release()
 	held = false;
 }
 
-void Processor::connect(Hardware * connectee)
+void Processor::connect(Peripheral * connectee)
 {
 	if (devicesLen == 65535)
 	{

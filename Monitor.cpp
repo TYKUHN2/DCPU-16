@@ -2,7 +2,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 
-Monitor::Monitor(unsigned int x, unsigned int y, unsigned int depth)
+Monitor::Monitor(uint x, uint y, uint depth)
 {
 	sf::VideoMode mode{ x, y, depth };
 	sf::String title = "DCPU-16 Monitor";

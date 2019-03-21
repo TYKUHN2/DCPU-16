@@ -92,7 +92,7 @@ sf::Color compileColor(const uint16_t raw)
 	return sf::Color{ r, g, b };
 }
 
-LEM1802::LEM1802(Processor * parent) : Monitor(128, 96, 12), Hardware(parent, 0x1C6C8B36, 0x734DF615, 0x1802)
+LEM1802::LEM1802(Processor * parent) : Monitor(128, 96, 12), Peripheral(parent, 0x1C6C8B36, 0x734DF615, 0x1802)
 {
 }
 

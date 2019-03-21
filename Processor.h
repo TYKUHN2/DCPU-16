@@ -1,9 +1,11 @@
 #pragma once
 #include "Executable.h"
 #include "Registers.h"
-#include "Interruptable.h"
+#include "Messagable.h"
+#include "Messanger.h"
+#include "Ticking.h"
 
-class Hardware;
+class Peripheral;
 
 enum class PowerMode
 {
@@ -14,9 +16,11 @@ enum class PowerMode
 	OFF
 };
 
-class Processor : public Interruptable, public Ticking
+class RACM;
+
+class Processor : public Messagable, public Ticking, public Messanger
 {
-	PowerMode mode = PowerMode::OFF;
+	friend RACM;
 
 	uint16_t PC = 0;
 	uint16_t SP = 0;
@@ -28,7 +32,7 @@ class Processor : public Interruptable, public Ticking
 	bool crashed = false;
 
 	int devicesLen = 0;
-	Hardware * devices[65535];
+	Peripheral * devices[65535];
 
 	int queuedInterrupt = 0xFFFF;
 
@@ -55,7 +59,7 @@ public:
 	void release();
 	void charge(int);
 
-	void connect(Hardware *);
+	void connect(Peripheral *);
 
 	void tick() override;
 
