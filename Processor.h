@@ -76,5 +76,7 @@ public:
 
 	void log(int);
 	void brk(int);
+
+	void reset();
 };
 

@@ -4,3 +4,6 @@ Implement other non-LEM1802 displays
 Implement other non-display hardware
 Optimize chain skipping
 Evaluate observable delay vs execution delay for debt handling
+Implement timed wireless sending/receiving
+Implement device and processor resetting
+Probably implement more strict device "bus"?
