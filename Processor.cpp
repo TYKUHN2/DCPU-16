@@ -681,17 +681,17 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 		debt += 3;
 		registers.a = POP;
 		PC = POP;
-		iq = false;
+		IQ = false;
 		return;
 
 	case IAQ:
 		debt += 2;
 		if (getValue(param)) {
-			iq = true;
+			IQ = true;
 		}
 		else
 		{
-			iq = false;
+			IQ = false;
 		}
 		return;
 
@@ -726,7 +726,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 		uint16_t id = getValue(param);
 		validateDevice(id);
 
-		interruptDevice(id);
+		queuedInterrupt = id;
 		held = true;
 		return;
 	}
@@ -811,9 +811,9 @@ void Processor::tick() //Process next instruction and return cycles to wait
 	}
 };
 
-void overflow(uint16_t * mem) //Randomly corrupts processor memory
+void Processor::overflow() //Randomly corrupts processor memory
 {
-
+	Debug::print("DCPU cannot overflow, not implemented");
 }
 
 void Processor::release()
@@ -835,12 +835,6 @@ bool Processor::inDebt() {
 	return debt > 0;
 }
 
-void Processor::interruptDevice(int addr)
-{
-	queuedInterrupt = addr;
-	held = true;
-}
-
 void Processor::charge(int amnt)
 {
 	debt += amnt;
@@ -853,4 +847,9 @@ void Processor::log(int val)
 
 void Processor::brk(int val)
 {
+	Debug::print("DCPU cannot break, not implemented");
+}
+
+void Processor::reset() {
+	Debug::print("DCPU cannot reset, not implemented");
 }

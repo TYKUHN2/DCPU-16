@@ -22,13 +22,15 @@ class Processor : public Messagable, public Ticking, public Messanger
 {
 	friend RACM;
 
+	PowerMode mode = PowerMode::FULL;
+
 	uint16_t PC = 0;
 	uint16_t SP = 0;
 	uint16_t EX = 0;
 	uint16_t IA = 0;
 
 	bool held = false;
-	bool iq = false;
+	bool IQ = false;
 	bool crashed = false;
 
 	int devicesLen = 0;
@@ -64,6 +66,8 @@ public:
 	void tick() override;
 
 	void interruptDevice(int); //Probably to be replaced with more direct access
+
+	void overflow() override;
 
 	void log(int);
 	void brk(int);
