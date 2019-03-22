@@ -3,7 +3,7 @@
 #include "Result.h" //Include emulator result codes
 #include <thread>
 #include <string>
-#include "LEM1802.h"
+//#include "LEM1802.h"
 
 #define DEFAULT_CLOCK 1000 //Set clock speed for default processor in Hz
 
@@ -23,7 +23,7 @@ int main(int argc, char* args)
 		}
 	}
 
-	Executable rom{ "./rom.dcpu" };
+	Executable rom{ "./rom.bin" };
 
 	try {
 		rom.load();
@@ -39,7 +39,7 @@ int main(int argc, char* args)
 
 	Processor main{ rom };
 
-	LEM1802 monitor{ &main };
+	//LEM1802 monitor{ &main };
 
 	std::chrono::duration<float, std::ratio<1>> period{ 1 / clock };
 
