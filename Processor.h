@@ -40,6 +40,11 @@ class Processor : public Messagable, public Ticking, public Messanger
 
 	char debt = 0;
 
+	bool insleep = false;
+	long pulse = 0;
+	long runtime = 0;
+	long sleeptime = 0;
+
 	void doubleParam(uint8_t, uint8_t, uint8_t);
 	void singleParam(uint8_t, uint8_t);
 

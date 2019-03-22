@@ -750,9 +750,17 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 void Processor::tick() //Process next instruction and return cycles to wait
 {
-	if (crashed || mode == PowerMode::SLEEP)
+	if (crashed || mode == PowerMode::OFF)
 	{
 		return;
+	}
+
+	if (--pulse == 0) {
+		if (insleep)
+			pulse = runtime;
+		else
+			pulse = sleeptime;
+		insleep = !insleep;
 	}
 
 	if (debt)
@@ -779,6 +787,9 @@ void Processor::tick() //Process next instruction and return cycles to wait
 		{
 			if (mode == PowerMode::SLEEP)
 				mode = PowerMode::FULL;
+			else if (mode == PowerMode::PULSE)
+				pulse += runtime;
+
 			IQ = true;
 			PUSH(PC);
 			PUSH(registers.a);
@@ -786,6 +797,9 @@ void Processor::tick() //Process next instruction and return cycles to wait
 			registers.a = msg;
 		}
 	}
+
+	if (insleep || mode == PowerMode::SLEEP)
+		return;
 
 	uint16_t cmd = memory[PC++];
 
