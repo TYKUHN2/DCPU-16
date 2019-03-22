@@ -243,6 +243,8 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 	using namespace Instructions;
 
 	switch (opcode) {
+	case 0x0:
+		singleParam(first, second);
 	case SET:
 	{
 		debt++;
@@ -785,29 +787,15 @@ void Processor::tick() //Process next instruction and return cycles to wait
 	uint16_t cmd = memory[PC++];
 
 	uint8_t first = cmd >> 10;
+	uint8_t second = (cmd >> 5) & 0b11111;
+	uint8_t opcode = cmd & 0b11111;
 
-	if (cmd & 0b11111) {
-		uint8_t second = (cmd >> 5) & 0b11111;
-		uint8_t opcode = cmd & 0b11111;
-
-		try //Catch silent errors
-		{
-			doubleParam(first, second, opcode); //Process two operand instruction
-		}
-		catch ([[maybe_unused]] Error e)
-		{
-		}
+	try //Catch silent errors
+	{
+		doubleParam(first, second, opcode); //Process two operand instruction
 	}
-	else {
-		char opcode = (cmd >> 5) & 0b11111;
-
-		try //Catch silent errors
-		{
-			singleParam(first, opcode); //Process one operand instruction
-		}
-		catch ([[maybe_unused]] Error e)
-		{
-		}
+	catch ([[maybe_unused]] Error e)
+	{
 	}
 };
 
