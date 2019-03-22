@@ -15,4 +15,3 @@ public:
 
 	void interrupt(uint16_t) override;
 };
-
