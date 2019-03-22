@@ -762,7 +762,7 @@ void Processor::tick() //Process next instruction and return cycles to wait
 	}
 	else if (queuedInterrupt != 0xFFFF)
 	{
-		devices[queuedInterrupt]->interrupt(0);
+		devices[queuedInterrupt]->interrupt(registers.a);
 		queuedInterrupt = 0xFFFF;
 	}
 	else if (held)
@@ -770,13 +770,16 @@ void Processor::tick() //Process next instruction and return cycles to wait
 		return;
 	}
 
-	if (iq == false) //If we have an interrupt and queueing is off
+	//Handle interrupts
+	if (IQ == false && interrupts) //If we have an interrupt and queueing is off
 	{
-		int msg = getInterrupt();
+		uint16_t msg = getInterrupt();
 
 		if (IA != 0) //Execute interrupt handler
 		{
-			iq = true;
+			if (mode == PowerMode::SLEEP)
+				mode = PowerMode::FULL;
+			IQ = true;
 			PUSH(PC);
 			PUSH(registers.a);
 			PC = IA;
