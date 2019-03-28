@@ -59,7 +59,7 @@ void SSI::receive(uint32_t data, Port * port) {
 	if (buffered)
 		overflow = true;
 
-	if (data > 2 ^ (8 * size)) {
+	if (data > (uint32_t)( 2 ^ (8 * size))) {
 		overflow = true;
 		data = data & 2 ^ (8 * size);
 	}
@@ -71,6 +71,7 @@ void SSI::receive(uint32_t data, Port * port) {
 void SSI::interrupt(uint16_t command) {
 	switch ((Commands)command) {
 	case Commands::QUERY:
+	{
 		STATUS status;
 
 		if (!port.connected)
@@ -92,6 +93,7 @@ void SSI::interrupt(uint16_t command) {
 
 		parent->registers.a = status.raw;
 		return;
+	}
 	case Commands::CONFIGURE:
 		size = parent->registers.b + 1;
 		Debug::print("Networking does not implement delay. Baud rate ignored");
@@ -112,6 +114,7 @@ void SSI::interrupt(uint16_t command) {
 		overflow = false;
 		return;
 	case Commands::TRANSMIT:
+	{
 		uint32_t data = parent->registers.b | (parent->registers.c << 16);
 
 		if (port.connected) {
@@ -131,6 +134,7 @@ void SSI::interrupt(uint16_t command) {
 			parent->registers.c = Errors::BUSY;
 		}
 		return;
+	}
 	case Commands::INTERRUPT:
 		INTERRUPTS config;
 		config.raw = parent->registers.b;

@@ -6,7 +6,7 @@ class Transmitter : public Wireless {
 
 protected:
 	void setPower(uint8_t);
-	inline uint8_t getPower();
+	uint8_t getPower();
 
 	void transmit(Packet);
 

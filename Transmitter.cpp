@@ -13,7 +13,7 @@ void Transmitter::setPower(uint8_t level) {
 		power = level;
 }
 
-inline uint8_t Transmitter::getPower() {
+uint8_t Transmitter::getPower() {
 	return power;
 }
 

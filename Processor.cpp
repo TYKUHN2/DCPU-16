@@ -245,6 +245,8 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 	switch (opcode) {
 	case 0x0:
 		singleParam(first, second);
+		break;
+
 	case SET:
 	{
 		debt++;
@@ -729,7 +731,6 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 		validateDevice(id);
 
 		queuedInterrupt = id;
-		held = true;
 		return;
 	}
 
@@ -773,10 +774,6 @@ void Processor::tick() //Process next instruction and return cycles to wait
 		devices[queuedInterrupt]->interrupt(registers.a);
 		queuedInterrupt = 0xFFFF;
 	}
-	else if (held)
-	{
-		return;
-	}
 
 	//Handle interrupts
 	if (IQ == false && interrupts) //If we have an interrupt and queueing is off
@@ -819,11 +816,6 @@ void Processor::tick() //Process next instruction and return cycles to wait
 void Processor::overflow() //Randomly corrupts processor memory
 {
 	Debug::print("DCPU cannot overflow, not implemented");
-}
-
-void Processor::release()
-{
-	held = false;
 }
 
 void Processor::connect(Peripheral * connectee)

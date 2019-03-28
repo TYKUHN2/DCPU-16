@@ -47,9 +47,10 @@ void RCI::receive(Packet packet) {
 void RCI::interrupt(uint16_t command) {
 	switch ((Commands)command) {
 	case Commands::QUERY:
+	{
 		parent->registers.a = channel;
 		parent->registers.b = getPower();
-		
+
 		STATUS status = {
 			buffer.size != 0,
 			false,
@@ -58,6 +59,7 @@ void RCI::interrupt(uint16_t command) {
 
 		parent->registers.c = status.raw;
 		return;
+	}
 	case Commands::RECEIVE:
 		parent->registers.b = buffer.size;
 
@@ -80,7 +82,7 @@ void RCI::interrupt(uint16_t command) {
 	case Commands::SEND:
 		Packet data = Packet{
 			parent->memory + parent->registers.b,
-			parent->registers.c
+			(uint8_t)parent->registers.c
 		};
 
 		transmit(data);
@@ -90,8 +92,8 @@ void RCI::interrupt(uint16_t command) {
 		message(parent);
 		return;
 	case Commands::RADIO:
-		channel = parent->registers.b;
-		setPower(parent->registers.c);
+		channel = (uint8_t)parent->registers.b;
+		setPower((uint8_t)parent->registers.c);
 		parent->registers.c = 0;
 		return;
 	case Commands::INTERRUPT:

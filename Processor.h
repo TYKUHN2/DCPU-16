@@ -29,7 +29,6 @@ class Processor : public Messagable, public Ticking, public Messanger
 	uint16_t EX = 0;
 	uint16_t IA = 0;
 
-	bool held = false;
 	bool IQ = false;
 	bool crashed = false;
 
@@ -63,7 +62,6 @@ public:
 	Processor(Executable);
 
 	bool inDebt();
-	void release();
 	void charge(int);
 
 	void connect(Peripheral *);
