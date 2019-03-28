@@ -3,9 +3,9 @@
 #include "Result.h" //Include emulator result codes
 #include <thread>
 #include <string>
+#include "Speaker.h"
+#include "config.h"
 //#include "LEM1802.h"
-
-#define DEFAULT_CLOCK 1000 //Set clock speed for default processor in Hz
 
 int main(int argc, char* args)
 {
@@ -40,6 +40,8 @@ int main(int argc, char* args)
 	Processor main{ rom };
 
 	//LEM1802 monitor{ &main };
+
+	Speaker speaker{ &main };
 
 	std::chrono::duration<float, std::ratio<1>> period{ 1 / clock };
 
