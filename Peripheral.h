@@ -1,6 +1,6 @@
 #pragma once
 #include "Processor.h"
-#include "HWType.h"
+#include "HWInfo.h"
 #include "Vendors.h"
 #include <cstdint>
 

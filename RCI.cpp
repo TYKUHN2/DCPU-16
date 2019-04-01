@@ -65,6 +65,12 @@ void RCI::interrupt(uint16_t command) {
 
 		if (buffer.size != 0) {
 			uint16_t * tgt = parent->memory + parent->registers.b;
+
+			uint16_t end = buffer.size + parent->registers.b;
+
+			if (end < buffer.size)
+				buffer.size -= end;
+
 			memcpy(tgt, buffer.data, buffer.size);
 
 			parent->registers.c = 0;
@@ -80,9 +86,15 @@ void RCI::interrupt(uint16_t command) {
 
 		return;
 	case Commands::SEND:
+		uint16_t size = parent->registers.c + parent->registers.b;
+		if (size < parent->registers.c)
+			size = parent->registers.c - size;
+		else
+			size = parent->registers.c;
+
 		Packet data = Packet{
 			parent->memory + parent->registers.b,
-			(uint8_t)parent->registers.c
+			(uint8_t)size
 		};
 
 		transmit(data);
