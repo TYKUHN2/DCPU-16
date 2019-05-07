@@ -1,6 +1,6 @@
 #pragma once
 #include "Monitor.h"
-#include "Peripheral.h"
+#include "../Hardware/Peripheral.h"
 
 class LEM1802 :
 	public Monitor, public Peripheral

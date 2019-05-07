@@ -1,7 +1,5 @@
 #include "SquareWave.h"
-#include "config.h"
-
-#include "Debug.h"
+#include "../config.h"
 
 void SquareWave::generate() {
 	double inc = (double)freq / SAMPLE_RATE;

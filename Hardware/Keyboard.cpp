@@ -153,6 +153,8 @@ bool checkKey(uint16_t key) {
 
 	if (res || key == 0x90)
 		return keyPressed(sf::Keyboard::LShift) || keyPressed(sf::Keyboard::RShift);
+
+	return false;
 }
 
 Keyboard::Keyboard(Processor * proc) : Peripheral(proc, Vendors::NYA_ELEKTRISKA, generickeyboard, vers) {

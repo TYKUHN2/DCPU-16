@@ -1,4 +1,5 @@
 #pragma once
+#include "Vendors.h"
 
 struct HWClass {
 	enum {
@@ -65,10 +66,14 @@ struct HWAPI {
 	bool interrupts : 1;
 };
 
-struct HWType {
-	HWClass hwclass;
-	HWAPI api;
-	uint16_t id;
+union HWType {
+	struct {
+		HWClass hwclass;
+		HWAPI api;
+		uint16_t id;
+	};
+
+	uint32_t raw;
 };
 
 struct HWInfo {

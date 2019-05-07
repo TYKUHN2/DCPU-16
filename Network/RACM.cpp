@@ -1,5 +1,5 @@
 #include "RACM.h"
-#include "Debug.h"
+#include "../Display/Debug.h"
 
 constexpr HWAPI RACMapi = {
 	HWAPI::NOT_STANDARD,
@@ -81,7 +81,7 @@ void RACM::interrupt(uint16_t command) {
 		pin = parent->registers.b;
 		return;
 	case Commands::RADIO:
-		channel = parent->registers.b;
+		channel = (uint8_t)parent->registers.b;
 		parent->registers.c = 0;
 	}
 }

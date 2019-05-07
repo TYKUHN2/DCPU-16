@@ -1,4 +1,4 @@
-#include "Peripheral.h"
+#include "../Hardware/Peripheral.h"
 #include "SineWave.h"
 
 class Speaker : public Peripheral {

@@ -1,9 +1,9 @@
 #pragma once
-#include "Executable.h"
+#include "../ROM/Executable.h"
 #include "Registers.h"
-#include "Messagable.h"
-#include "Messanger.h"
-#include "Ticking.h"
+#include "../Hardware/Messagable.h"
+#include "../Hardware/Messanger.h"
+#include "../Ticking.h"
 
 class Peripheral;
 

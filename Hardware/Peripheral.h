@@ -1,5 +1,5 @@
 #pragma once
-#include "Processor.h"
+#include "../Processor/Processor.h"
 #include "HWInfo.h"
 #include "Vendors.h"
 #include <cstdint>

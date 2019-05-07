@@ -1,8 +1,8 @@
 #include "Processor.h"
 #include <cstring>
 #include "Instructions.h"
-#include "Peripheral.h"
-#include "Debug.h"
+#include "../Hardware/Peripheral.h"
+#include "../Display/Debug.h"
 
 #define PUSH(val) memory[--SP] = val
 #define POP memory[SP++]

@@ -1,5 +1,5 @@
 #include "Wave.h"
-#include "config.h"
+#include "../config.h"
 
 Wave::Wave() {
 	buffer = new int16_t[SAMPLE_SIZE];

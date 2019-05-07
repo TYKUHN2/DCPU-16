@@ -1,5 +1,5 @@
 #include "SSI.h"
-#include "Debug.h"
+#include "../Display/Debug.h"
 
 HWAPI SSIapi = {
 	0x7,		//Random standard API

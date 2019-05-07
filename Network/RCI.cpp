@@ -1,5 +1,5 @@
 #include "RCI.h"
-#include "Debug.h"
+#include "../Display/Debug.h"
 
 HWAPI RCIapi = {
 	0x00,	//Standard API 0
@@ -85,7 +85,7 @@ void RCI::interrupt(uint16_t command) {
 		}
 
 		return;
-	case Commands::SEND:
+	case Commands::SEND: {
 		uint16_t size = parent->registers.c + parent->registers.b;
 		if (size < parent->registers.c)
 			size = parent->registers.c - size;
@@ -103,6 +103,7 @@ void RCI::interrupt(uint16_t command) {
 		msg = sendmsg;
 		message(parent);
 		return;
+	}
 	case Commands::RADIO:
 		channel = (uint8_t)parent->registers.b;
 		setPower((uint8_t)parent->registers.c);

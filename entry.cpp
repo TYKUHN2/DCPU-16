@@ -1,9 +1,9 @@
-#include "Processor.h" //Include processor type to construct initial device
-#include "Executable.h" //Include executable type to load inital ROM
+#include "Processor/Processor.h" //Include processor type to construct initial device
+#include "ROM/Executable.h" //Include executable type to load inital ROM
 #include "Result.h" //Include emulator result codes
 #include <thread>
 #include <string>
-#include "Speaker.h"
+#include "Speaker/Speaker.h"
 #include "config.h"
 //#include "LEM1802.h"
 

@@ -1,5 +1,5 @@
 #include "SineWave.h"
-#include "config.h"
+#include "../config.h"
 
 constexpr double tau = 6.28318;
 

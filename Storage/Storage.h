@@ -1,5 +1,5 @@
 #pragma once
-#include "Peripheral.h"
+#include "../Hardware/Peripheral.h"
 #include <fstream>
 #include <string>
 
