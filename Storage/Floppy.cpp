@@ -1,4 +1,5 @@
 #include "Floppy.h"
+#include "../Processor/Processor.h"
 
 constexpr HWClass floppydrive {
 	HWClass::STORAGE,

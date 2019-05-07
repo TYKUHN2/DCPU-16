@@ -35,6 +35,7 @@ enum class HWSubclass {
 	CONTROLLER = 1,
 	FLOPPY_DRIVE = 15,
 	DMA = 1,
+	MMU = 8,
 	NON_VOLATILE = 4,
 	TEXT_COMMAND = 0,
 	TEXT_MEMORY = 1,
@@ -66,14 +67,10 @@ struct HWAPI {
 	bool interrupts : 1;
 };
 
-union HWType {
-	struct {
-		HWClass hwclass;
-		HWAPI api;
-		uint16_t id;
-	};
-
-	uint32_t raw;
+struct HWType {
+	HWClass hwclass;
+	HWAPI api;
+	uint16_t id;
 };
 
 struct HWInfo {

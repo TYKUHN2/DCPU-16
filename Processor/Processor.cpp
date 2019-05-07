@@ -20,10 +20,8 @@ void Processor::validateDevice(uint16_t devicenum) {
 	}
 }
 
-Processor::Processor(Executable rom) //Initializes a new processor. Expects null-terminated endian-fixed ROM input
-{
-	std::memcpy(memory, rom.data, rom.size);
-}
+Processor::Processor(Executable rom, uint16_t words) : memory(this, rom, words) //Initializes a new processor. Expects null-terminated endian-fixed ROM input
+{}
 
 uint16_t Processor::getValue(uint8_t op) //Gets value represented by an operand
 {
@@ -110,26 +108,26 @@ uint16_t Processor::getValue(uint8_t op) //Gets value represented by an operand
 	}
 }
 
-uint16_t * Processor::getDest(uint8_t op)
+uint16_t& Processor::getDest(uint8_t op)
 {
 	switch (op)
 	{
 	case 0x0:
-		return &registers.a;
+		return registers.a;
 	case 0x1:
-		return &registers.b;
+		return registers.b;
 	case 0x2:
-		return &registers.c;
+		return registers.c;
 	case 0x3:
-		return &registers.x;
+		return registers.x;
 	case 0x4:
-		return &registers.y;
+		return registers.y;
 	case 0x5:
-		return &registers.z;
+		return registers.z;
 	case 0x6:
-		return &registers.i;
+		return registers.i;
 	case 0x7:
-		return &registers.j;
+		return registers.j;
 
 	case 0x8:
 	case 0x9:
@@ -141,7 +139,7 @@ uint16_t * Processor::getDest(uint8_t op)
 	case 0xF:
 	{
 		uint16_t ptr = getValue(op - 0x08);
-		return memory + ptr;
+		return memory[ptr];
 	}
 
 	case 0x10:
@@ -156,32 +154,32 @@ uint16_t * Processor::getDest(uint8_t op)
 		debt++;
 		uint16_t ptr = getValue(op - 0x10);
 		ptr += memory[PC++];
-		return memory + ptr;
+		return memory[ptr];
 	}
 
 	case 0x18:
-		return memory + --SP;
+		return memory[--SP];
 	case 0x19:
-		return memory + SP;
+		return memory[SP];
 	case 0x1A:
 	{
 		debt++;
 		uint16_t ptr = SP + memory[PC++]; //Read extra word and skip extra word on for next execution
-		return memory + ptr;
+		return memory[ptr];
 	}
 
 	case 0x1B:
-		return &SP;
+		return SP;
 	case 0x1C:
-		return &PC;
+		return PC;
 	case 0x1D:
-		return &EX;
+		return EX;
 
 	case 0x1E:
 	{
 		debt++;
 		uint16_t ptr = memory[PC++];
-		return memory + ptr; //Read extra word and skip extra word on for next execution
+		return memory[ptr]; //Read extra word and skip extra word on for next execution
 	}
 
 	case 0x1F:
@@ -252,9 +250,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt++;
 		uint16_t a = getValue(first);
 
-		uint16_t * dest = getDest(second);
-
-		*dest = a;
+		getDest(second) = a;
 		return;
 	}
 
@@ -266,7 +262,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = a + b;
 
-		*getDest(second) = result;
+		getDest(second) = result;
 
 		if (result < a)
 		{
@@ -287,7 +283,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b - a;
 
-		*getDest(second) = result;
+		getDest(second) = result;
 
 		if (result > b)
 		{
@@ -308,7 +304,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b * a;
 
-		*getDest(second) = result;
+		getDest(second) = result;
 
 		EX = ((a*b) >> 16) & 0xFFFF;
 		return;
@@ -322,7 +318,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		int16_t result = a * b;
 
-		*getDest(second) = result;
+		getDest(second) = result;
 
 		EX = ((a*b) >> 16) & 0xFFFF;
 		return;
@@ -335,14 +331,14 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t b = peek(second);
 
 		if (a == 0) {
-			*getDest(second) = 0;
+			getDest(second) = 0;
 			EX = 0;
 		}
 		else
 		{
 			uint16_t result = b / a;
 
-			*getDest(second) = result;
+			getDest(second) = result;
 
 			EX = ((b << 16) / a) & 0xFFFF;
 		}
@@ -357,14 +353,14 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		int16_t b = peek(second);
 
 		if (a == 0) {
-			*getDest(second) = 0;
+			getDest(second) = 0;
 			EX = 0;
 		}
 		else
 		{
 			int16_t result = b / a;
 
-			*getDest(second) = result;
+			getDest(second) = result;
 
 			EX = ((b << 16) / a) & 0xFFFF;
 		}
@@ -378,14 +374,14 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		uint16_t * dest = getDest(second);
+		uint16_t& dest = getDest(second);
 
 		if (a == 0) {
-			*dest = 0;
+			dest = 0;
 		}
 		else
 		{
-			*dest = b % a;
+			dest = b % a;
 		}
 		return;
 	}
@@ -396,14 +392,14 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		int16_t a = getValue(first);
 		int16_t b = peek(second);
 
-		uint16_t * dest = getDest(second);
+		uint16_t& dest = getDest(second);
 
 		if (a == 0) {
-			*dest = 0;
+			dest = 0;
 		}
 		else
 		{
-			*dest = b % a;
+			dest = b % a;
 		}
 		return;
 	}
@@ -414,7 +410,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		*getDest(second) = b & a;
+		getDest(second) = b & a;
 
 		return;
 	}
@@ -425,7 +421,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		*getDest(second) = b | a;
+		getDest(second) = b | a;
 
 		return;
 	}
@@ -436,7 +432,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		*getDest(second) = b ^ a;
+		getDest(second) = b ^ a;
 
 		return;
 	}
@@ -449,7 +445,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		EX = ((b << 16) >> a) & 0xFFFF;
 
-		*getDest(second) = b >> a;
+		getDest(second) = b >> a;
 
 		return;
 	}
@@ -462,7 +458,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		EX = ((b << 16) >> a) & 0xFFFF;
 
-		*getDest(second) = b >> a;
+		getDest(second) = b >> a;
 
 		return;
 	}
@@ -473,7 +469,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		*getDest(second) = b << a;
+		getDest(second) = b << a;
 
 		EX = ((b << a) >> 16) & 0xFFFF;
 
@@ -584,7 +580,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b + a + EX;
 
-		*getDest(second) = result;
+		getDest(second) = result;
 
 		if (result < b)
 		{
@@ -605,7 +601,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b - a + EX;
 
-		*getDest(second) = result;
+		getDest(second) = result;
 
 		if (result < b)
 		{
@@ -623,7 +619,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt += 2;
 		uint16_t a = getValue(first);
 
-		*getDest(second) = a;
+		getDest(second) = a;
 
 		registers.i++;
 		registers.j++;
@@ -635,7 +631,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt += 2;
 		uint16_t a = getValue(first);
 
-		*getDest(second) = a;
+		getDest(second) = a;
 
 		registers.i--;
 		registers.j--;
@@ -673,7 +669,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 	case IAG:
 		debt++;
-		*getDest(param) = IA;
+		getDest(param) = IA;
 		return;
 
 	case IAS:
@@ -701,7 +697,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 	case HWN:
 		debt += 2;
-		*getDest(param) = devicesLen;
+		getDest(param) = devicesLen;
 		return;
 
 	case HWQ:

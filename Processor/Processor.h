@@ -1,11 +1,11 @@
 #pragma once
+
 #include "../ROM/Executable.h"
 #include "Registers.h"
 #include "../Hardware/Messagable.h"
 #include "../Hardware/Messanger.h"
 #include "../Ticking.h"
-
-class Peripheral;
+#include "../Memory/MMU.hpp"
 
 enum class PowerMode
 {
@@ -50,16 +50,17 @@ class Processor : public Messagable, public Ticking, public Messanger
 	void validateDevice(uint16_t);
 
 	uint16_t getValue(uint8_t);
-	uint16_t * getDest(uint8_t);
+	uint16_t& getDest(uint8_t);
 	uint16_t peek(uint8_t);
 
 	void conditionalSkip();
 
 public:
 	Registers registers;
-	uint16_t memory[65536];
+
+	MMU memory;
 	
-	Processor(Executable);
+	Processor(Executable, uint16_t);
 
 	bool inDebt();
 	void charge(int);

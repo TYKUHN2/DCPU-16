@@ -1,5 +1,6 @@
 #include "Controller.h"
 #include "../Display/Debug.h"
+#include "../Processor/Processor.h"
 
 constexpr HWClass controller = {
 	HWClass::HUMAN_INTERFACE,

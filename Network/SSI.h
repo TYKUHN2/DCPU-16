@@ -1,5 +1,6 @@
 #pragma once
 #include "Wired.h"
+#include "../Hardware/Messanger.h"
 
 class SSI : public Wired, public Messanger {
 	uint16_t recvmsg;

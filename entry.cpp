@@ -37,9 +37,7 @@ int main(int argc, char* args)
 		}
 	}
 
-	Processor main{ rom };
-
-	//LEM1802 monitor{ &main };
+	Processor main{ rom, 65535 };
 
 	Speaker speaker{ &main };
 

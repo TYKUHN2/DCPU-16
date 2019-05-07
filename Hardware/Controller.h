@@ -1,5 +1,6 @@
 #pragma once
 #include "Peripheral.h"
+#include "Messanger.h"
 
 class Controller : public Peripheral, public Messanger {
 	void pollAnalog();

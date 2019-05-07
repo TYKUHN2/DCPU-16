@@ -1,5 +1,6 @@
 #include "RCI.h"
 #include "../Display/Debug.h"
+#include "../Processor/Processor.h"
 
 HWAPI RCIapi = {
 	0x00,	//Standard API 0
@@ -64,14 +65,14 @@ void RCI::interrupt(uint16_t command) {
 		parent->registers.b = buffer.size;
 
 		if (buffer.size != 0) {
-			uint16_t * tgt = parent->memory + parent->registers.b;
+			uint16_t& tgt = parent->memory[parent->registers.b];
 
 			uint16_t end = buffer.size + parent->registers.b;
 
 			if (end < buffer.size)
 				buffer.size -= end;
 
-			memcpy(tgt, buffer.data, buffer.size);
+			memcpy(&tgt, buffer.data, buffer.size);
 
 			parent->registers.c = 0;
 
@@ -93,7 +94,7 @@ void RCI::interrupt(uint16_t command) {
 			size = parent->registers.c;
 
 		Packet data = Packet{
-			parent->memory + parent->registers.b,
+			&(parent->memory[parent->registers.b]),
 			(uint8_t)size
 		};
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "Storage.h"
+#include "../Hardware/Messanger.h"
 
 class Floppy : public Storage, public Messanger {
 	enum class State {

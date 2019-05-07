@@ -1,5 +1,6 @@
 #include "Speaker.h"
 #include "../config.h"
+#include "../Processor/Processor.h"
 
 constexpr HWClass speaker {
 	HWClass::GENERIC_OUTPUT,

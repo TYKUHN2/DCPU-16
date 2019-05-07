@@ -1,4 +1,5 @@
 #include "Keyboard.h"
+#include "../Processor/Processor.h"
 #include <SFML/Window/Keyboard.hpp>
 
 constexpr HWClass keyboard{

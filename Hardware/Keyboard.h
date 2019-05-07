@@ -1,6 +1,7 @@
 #pragma once
 #include "Peripheral.h"
 #include "Buffer.h"
+#include "Messanger.h"
 
 enum class KeyboardMode {
 	SMART_TEXT,

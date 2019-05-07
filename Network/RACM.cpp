@@ -1,5 +1,6 @@
 #include "RACM.h"
 #include "../Display/Debug.h"
+#include "../Processor/Processor.h"
 
 constexpr HWAPI RACMapi = {
 	HWAPI::NOT_STANDARD,
@@ -49,7 +50,7 @@ void RACM::receive(Packet packet) {
 			}
 			return;
 		case RemoteCommands::UPLOAD:
-			uint16_t * tgt = parent->memory;
+			uint16_t* tgt = &(parent->memory[0]);
 
 			Debug::print("RACM cannot reset devices, not implemented");
 			//Reset devices!!!

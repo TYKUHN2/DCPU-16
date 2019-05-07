@@ -1,5 +1,6 @@
 #pragma once
 #include "Transmitter.h"
+#include "../Hardware/Messanger.h"
 
 class RCI : public Transmitter, public Messanger {
 	uint16_t recvmsg = 0x0;

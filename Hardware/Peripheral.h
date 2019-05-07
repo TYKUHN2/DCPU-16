@@ -1,10 +1,10 @@
 #pragma once
-#include "../Processor/Processor.h"
 #include "HWInfo.h"
 #include "Vendors.h"
+#include "Messagable.h"
 #include <cstdint>
 
-
+class Processor;
 
 class Peripheral : public Messagable
 {

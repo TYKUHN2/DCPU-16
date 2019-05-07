@@ -1,4 +1,5 @@
 #include "Storage.h"
+#include "../Processor/Processor.h"
 #include <filesystem>
 #include <cstring>
 
@@ -33,13 +34,13 @@ void Storage::read(uint16_t sector, uint16_t offset) {
 	else
 		max = 512;
 
-	uint16_t * tgt = parent->memory + offset;
+	uint16_t& tgt = parent->memory[offset];
 
-	file.read((char *)tgt, max);
+	file.read((char *)&tgt, max);
 	if (file.eofbit) {
 		std::streamsize numin = file.gcount();
 
-		memset((void*)(tgt + numin), 0, max - numin);
+		memset((void*)(&tgt + numin), 0, max - numin);
 	}
 	else if (file.badbit)
 		throw Storage::Error::CRITICAL;
@@ -53,7 +54,7 @@ void Storage::write(uint16_t sector, uint16_t offset) {
 
 	uint16_t maxsectors = sectors * tracks * surfaces;
 
-	uint16_t * src = parent->memory + offset;
+	uint16_t& src = parent->memory[offset];
 
 	uint16_t max = offset + 512;
 	if (max < offset)
@@ -64,7 +65,7 @@ void Storage::write(uint16_t sector, uint16_t offset) {
 	if (sector > maxsectors)
 		throw Storage::Error::OUT_OF_BOUNDS;
 
-	file.write((char *)src, max);
+	file.write((char *)&src, max);
 	
 	if (file.badbit)
 		throw Storage::Error::CRITICAL;
