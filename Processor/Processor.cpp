@@ -213,24 +213,22 @@ uint16_t Processor::peek(uint8_t op) //Get's value without incrementing PC incas
 void Processor::conditionalSkip() //Conditional evaluated false, perform chain skip
 {
 	while (true) {
-		uint16_t next = getValue(0x1E); //Get next word using shortcut 0x1E = next word also advances debt
+		uint16_t next = getValue(0x1F); //Get next word using shortcut 0x1E = next word also advances debt
 
 		char first = next >> 10;
 		char second = (next >> 5) & 0b11111;
 		char opcode = next & 0b11111;
 
-		if (opcode > 0x0F && opcode < 0x18)
-		{
-			char temp = debt;
-			uint16_t temp2 = SP;
+		char temp = debt;
+		uint16_t temp2 = SP;
 
-			getValue(first);
-			getValue(second);
+		getValue(first);
+		getValue(second);
 
-			debt = temp;
-			SP = temp2;
-		}
-		else
+		debt = temp;
+		SP = temp2;
+
+		if (opcode < 0x10 || opcode > 0x17)
 		{
 			return;
 		}
