@@ -190,6 +190,14 @@ uint16_t& Processor::getDest(uint8_t op)
 	}
 }
 
+void Processor::doSet(uint8_t dst, uint16_t src) {
+	try {
+		getDest(dst) = src;
+	}
+	catch ([[maybe_unused]]Error e) {
+	}
+}
+
 uint16_t Processor::peek(uint8_t op) //Get's value without incrementing PC incase of extra word (for read then set purposes)
 {
 	uint16_t temp = PC;
@@ -234,9 +242,9 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 	/*General operation execution sequence
 		1) Read values from relevant operands
 		2) Execute evaluation algorithms
-		3) Write effects (EX, I, J) (Violates Errata, could cause errors)
 		4) Read destination operands (as relevant)
-		5) Write to destination (or drop if literal) */
+		5) Write to destination (or drop if literal)
+		3) Write effects(EX, I, J) */
 
 	using namespace Instructions;
 
@@ -250,7 +258,8 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt++;
 		uint16_t a = getValue(first);
 
-		getDest(second) = a;
+		doSet(second, a);
+
 		return;
 	}
 
@@ -262,7 +271,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = a + b;
 
-		getDest(second) = result;
+		doSet(second, result);
 
 		if (result < a)
 		{
@@ -283,7 +292,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b - a;
 
-		getDest(second) = result;
+		doSet(second, result);
 
 		if (result > b)
 		{
@@ -304,7 +313,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b * a;
 
-		getDest(second) = result;
+		doSet(second, result);
 
 		EX = ((a*b) >> 16) & 0xFFFF;
 		return;
@@ -318,7 +327,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		int16_t result = a * b;
 
-		getDest(second) = result;
+		doSet(second, result);
 
 		EX = ((a*b) >> 16) & 0xFFFF;
 		return;
@@ -331,14 +340,14 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t b = peek(second);
 
 		if (a == 0) {
-			getDest(second) = 0;
+			doSet(second, 0);
 			EX = 0;
 		}
 		else
 		{
 			uint16_t result = b / a;
 
-			getDest(second) = result;
+			doSet(second, result);
 
 			EX = ((b << 16) / a) & 0xFFFF;
 		}
@@ -353,14 +362,14 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		int16_t b = peek(second);
 
 		if (a == 0) {
-			getDest(second) = 0;
+			doSet(second, 0);
 			EX = 0;
 		}
 		else
 		{
 			int16_t result = b / a;
 
-			getDest(second) = result;
+			doSet(second, result);
 
 			EX = ((b << 16) / a) & 0xFFFF;
 		}
@@ -374,14 +383,12 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		uint16_t& dest = getDest(second);
-
 		if (a == 0) {
-			dest = 0;
+			doSet(second, 0);
 		}
 		else
 		{
-			dest = b % a;
+			doSet(second, b % a);
 		}
 		return;
 	}
@@ -392,14 +399,12 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		int16_t a = getValue(first);
 		int16_t b = peek(second);
 
-		uint16_t& dest = getDest(second);
-
 		if (a == 0) {
-			dest = 0;
+			doSet(second, 0);
 		}
 		else
 		{
-			dest = b % a;
+			doSet(second, b % a);
 		}
 		return;
 	}
@@ -410,7 +415,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		getDest(second) = b & a;
+		doSet(second, b & a);
 
 		return;
 	}
@@ -421,7 +426,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		getDest(second) = b | a;
+		doSet(second, b | a);
 
 		return;
 	}
@@ -432,7 +437,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		getDest(second) = b ^ a;
+		doSet(second, b ^ a);
 
 		return;
 	}
@@ -445,7 +450,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		EX = ((b << 16) >> a) & 0xFFFF;
 
-		getDest(second) = b >> a;
+		doSet(second, b >> a);
 
 		return;
 	}
@@ -458,7 +463,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		EX = ((b << 16) >> a) & 0xFFFF;
 
-		getDest(second) = b >> a;
+		doSet(second, b >> a);
 
 		return;
 	}
@@ -469,7 +474,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		uint16_t a = getValue(first);
 		uint16_t b = peek(second);
 
-		getDest(second) = b << a;
+		doSet(second, b << a);
 
 		EX = ((b << a) >> 16) & 0xFFFF;
 
@@ -580,7 +585,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b + a + EX;
 
-		getDest(second) = result;
+		doSet(second, result);
 
 		if (result < b)
 		{
@@ -601,7 +606,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 
 		uint16_t result = b - a + EX;
 
-		getDest(second) = result;
+		doSet(second, result);
 
 		if (result < b)
 		{
@@ -619,7 +624,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt += 2;
 		uint16_t a = getValue(first);
 
-		getDest(second) = a;
+		doSet(second, a);
 
 		registers.i++;
 		registers.j++;
@@ -631,7 +636,7 @@ void Processor::doubleParam(uint8_t first, uint8_t second, uint8_t opcode) //Pro
 		debt += 2;
 		uint16_t a = getValue(first);
 
-		getDest(second) = a;
+		doSet(second, a);
 
 		registers.i--;
 		registers.j--;
@@ -669,7 +674,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 	case IAG:
 		debt++;
-		getDest(param) = IA;
+		doSet(param, IA);
 		return;
 
 	case IAS:
@@ -697,7 +702,7 @@ void Processor::singleParam(uint8_t param, uint8_t opcode) //Process single-oper
 
 	case HWN:
 		debt += 2;
-		getDest(param) = devicesLen;
+		doSet(param, devicesLen);
 		return;
 
 	case HWQ:

@@ -51,6 +51,7 @@ class Processor : public Messagable, public Ticking, public Messanger
 
 	uint16_t getValue(uint8_t);
 	uint16_t& getDest(uint8_t);
+	void doSet(uint8_t, uint16_t);
 	uint16_t peek(uint8_t);
 
 	void conditionalSkip();
