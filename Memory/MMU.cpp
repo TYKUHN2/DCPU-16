@@ -12,7 +12,7 @@ constexpr uint16_t vers = 0x000B;
 constexpr HWAPI kcmapi{
 	0xE,	//Standard subclass API
 	false,	//No extended API
-	true,	//"Memory mapped"
+	false,	//"Memory mapped"
 	true,	//Reset command
 	false	//Does not generate interrupts
 };
@@ -42,7 +42,7 @@ MMU::MMU(Processor* parent, Executable base, uint16_t words) : Peripheral(parent
 }
 
 uint16_t& MMU::operator[](uint16_t addr) {
-	uint8_t segment = addr / 0xFFFF;
+	uint8_t segment = addr >> 12;
 
 	PAGE page = ptable[segment];
 
@@ -51,13 +51,15 @@ uint16_t& MMU::operator[](uint16_t addr) {
 		return bad;
 	}
 
-	return memory[page.pword + addr];
+	uint32_t realaddr = (page.pword << 12) + (addr & 0x0FFF);
+
+	return memory[realaddr];
 }
 
 void MMU::interrupt(uint16_t command) {
 	switch ((Commands)command) {
 	case Commands::MAP_SEGMENT: {
-		uint8_t vsegment = (uint8_t)parent->registers.b % 16;
+		uint8_t vsegment = (uint8_t)parent->registers.b & 0xF;
 		uint16_t psegment = parent->registers.c;
 
 		if (psegment > size) {
@@ -68,9 +70,11 @@ void MMU::interrupt(uint16_t command) {
 			ptable[vsegment] = PAGE{ psegment };
 			parent->registers.a = 1;
 		}
+		break;
 	}
 	case Commands::MEMORY_INFO:
 		parent->registers.b = size + 1;
+		break;
 	case Commands::RESET:
 		resetMap();
 	}
